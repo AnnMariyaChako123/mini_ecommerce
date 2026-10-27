@@ -8,8 +8,9 @@ from .views import api_test_page
 urlpatterns = [
     path("", views.home, name = "home"),
     path('register/', views.register, name='register'),
-    path('login/',auth_views.LoginView.as_view(template_name='catalog/login.html'),name='login'),
-    path('logout/',auth_views.LogoutView.as_view(),name='logout'),
+    path('login/', views.request_otp, name='login'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('wishlist/add/<int:product_id>/',views.add_to_wishlist,name='add_to_wishlist'),
     path('wishlist/',views.wishlist,name='wishlist'),
     path('wishlist/remove/<int:item_id>/',views.remove_from_wishlist,name='remove_from_wishlist'),

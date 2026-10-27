@@ -37,15 +37,59 @@ def home(request):
         "selected_category":category_id,
     })
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')
+#     else:
+#         form = UserCreationForm()
+
+#     return render(
+#         request,
+#         'catalog/register.html',
+#         {'form': form}
+#     )
+
+
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from django.shortcuts import render, redirect
+
+User = get_user_model()
+
+
+class CustomerRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip().lower()
+
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError(
+                "An account with this email already exists."
+            )
+
+        return email
+
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomerRegistrationForm(request.POST)
 
         if form.is_valid():
             form.save()
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomerRegistrationForm()
 
     return render(
         request,
@@ -144,3 +188,130 @@ from django.shortcuts import render
 
 def api_test_page(request):
     return render(request, "catalog/api_test.html")
+
+import secrets
+from datetime import timedelta
+
+from django.conf import settings
+from django.contrib.auth import get_user_model, login
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
+
+from .models import EmailOTP
+
+
+User = get_user_model()
+
+
+def request_otp(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip().lower()
+
+        if not User.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'No account found with this email. Please register first.')
+            return redirect('login')
+
+        
+        recent_otp = EmailOTP.objects.filter(
+            email__iexact=email,
+            created_at__gte=timezone.now() - timedelta(seconds=60)
+        ).exists()
+
+        if recent_otp:
+            messages.error(request, 'Please wait 60 seconds before requesting another OTP.')
+            return redirect('login')
+
+        otp = f'{secrets.randbelow(1_000_000):06d}'
+
+        EmailOTP.objects.filter(email__iexact=email, is_used=False).update(is_used=True)
+
+        EmailOTP.objects.create(
+            email=email,
+            otp_hash=make_password(otp),
+            expires_at=timezone.now() + timedelta(minutes=5)
+        )
+
+        try:
+            send_mail(
+                'Your Mini Ecommerce Login OTP',
+                f'Your OTP is {otp}. It expires in 5 minutes. Do not share it with anyone.',
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=False,
+            )
+        except Exception:
+            EmailOTP.objects.filter(email__iexact=email, is_used=False).update(is_used=True)
+            messages.error(request, 'Unable to send OTP. Please try again later.')
+            return redirect('login')
+
+        request.session['otp_email'] = email
+        return redirect('verify_otp')
+
+    return render(request, 'catalog/login.html')
+
+
+
+def verify_otp(request):
+    email = request.session.get('otp_email')
+
+    if not email:
+        messages.error(request, 'Please request an OTP first.')
+        return redirect('login')
+
+    if request.method == 'POST':
+        otp = request.POST.get('otp', '').strip()
+
+        record = EmailOTP.objects.filter(
+            email__iexact=email,
+            is_used=False
+        ).order_by('-created_at').first()
+
+        if not record or record.is_expired():
+            messages.error(request, 'OTP expired. Please request a new one.')
+            request.session.pop('otp_email', None)
+            return redirect('login')
+
+        if record.attempts >= 5:
+            record.is_used = True
+            record.save(update_fields=['is_used'])
+            request.session.pop('otp_email', None)
+            messages.error(request, 'Too many attempts. Request a new OTP.')
+            return redirect('login')
+
+        record.attempts += 1
+        record.save(update_fields=['attempts'])
+
+        if not check_password(otp, record.otp_hash):
+            messages.error(request, 'Invalid OTP. Please try again.')
+            return redirect('verify_otp')
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            record.is_used = True
+            record.save(update_fields=['is_used'])
+            request.session.pop('otp_email', None)
+            messages.error(
+                request,
+                'Account not found for this email. Please register first.'
+            )
+            return redirect('login')
+
+        record.is_used = True
+        record.save(update_fields=['is_used'])
+
+       
+        from django.contrib.auth import logout
+        logout(request)
+
+       
+        login(request, user)
+
+        request.session.pop('otp_email', None)
+
+        return redirect('home')
+
+    return render(request, 'catalog/verify_otp.html')

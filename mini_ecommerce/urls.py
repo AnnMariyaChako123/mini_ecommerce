@@ -22,13 +22,14 @@ from django.contrib.auth import views as auth_views
 from cart.views import sales_dashboard_page
 from catalog.views import api_test_page
 from cart.views import razorpay_webhook
+from catalog import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("catalog.urls")),
     path('cart/', include("cart.urls")),
-    path('accounts/login/',auth_views.LoginView.as_view(template_name='login.html'),name='login'),
-    path('accounts/logout/',auth_views.LogoutView.as_view(),name='logout'),
+    path('accounts/login/', views.request_otp, name='account_login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='account_logout'),
     path('sales-dashboard/',sales_dashboard_page,name='sales_dashboard_page',),
     path("api-test/", api_test_page, name="api_test_page"),
     path('razorpay/webhook/', razorpay_webhook, name='razorpay_webhook'),

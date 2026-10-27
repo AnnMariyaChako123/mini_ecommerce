@@ -1,23 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Customer Login</title>
 </head>
 <body>
-    
-<h2>Customer Login</h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+    <h2>Customer Login</h2>
+    <p>Login using your registered email address.</p>
 
-<p>
-    New customer?
-    <a href="{% url 'register' %}">Register</a>
-</p>
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="email">Email Address</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <button type="submit">Send OTP</button>
+    </form>
+
+    <p>
+        New customer?
+        <a href="{% url 'register' %}">Register</a>
+    </p>
+
 </body>
 </html>
