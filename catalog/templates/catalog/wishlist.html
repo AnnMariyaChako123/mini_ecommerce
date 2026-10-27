@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff8fa;
+            margin: 0;
+            padding: 25px;
+        }
+
+        h1 {
+            color: #e91e63;
+        }
+
+        .product {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #00000010;
+        }
+
+        a {
+            color: #e91e63;
+            text-decoration: none;
+        }
+
+        button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>My Wishlist ❤️</h1>
+
+    <a href="{% url 'home' %}">← Back to Products</a>
+
+    <hr>
+
+    {% for item in items %}
+        <div class="product">
+
+            <h3>{{ item.product.name }}</h3>
+
+            <p>Brand: {{ item.product.brand }}</p>
+
+            <p>Price: ₹{{ item.product.price }}</p>
+
+            <form method="post"
+                  action="{% url 'remove_from_wishlist' item.id %}">
+                {% csrf_token %}
+                <button type="submit">Remove ❤️</button>
+            </form>
+
+        </div>
+    {% empty %}
+        <p>Your wishlist is empty.</p>
+    {% endfor %}
+
+</body>
+</html>

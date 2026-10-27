@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+
+    <h1>Checkout</h1>
+
+    <h2>Order Summary</h2>
+
+    {% for item in items %}
+        <div>
+            <h3>{{ item.product.name }}</h3>
+
+            <p>
+                Original Price:
+                ₹{{ item.product.price|floatformat:2 }}
+            </p>
+
+            <p>
+                Discounted Price:
+                ₹{{ item.discounted_price|floatformat:2 }}
+            </p>
+
+            <p>
+                Quantity: {{ item.quantity }}
+            </p>
+
+            <p>
+                Subtotal: ₹{{ item.subtotal|floatformat:2 }}
+            </p>
+        </div>
+
+        <hr>
+    {% empty %}
+        <p>Your cart is empty.</p>
+    {% endfor %}
+
+    <h2>Price Details</h2>
+
+    <p>Subtotal: ₹{{ subtotal|floatformat:2 }}</p>
+
+    <p>Tax (5%): ₹{{ tax|floatformat:2 }}</p>
+    
+    <p>Shipping Charge: ₹{{ shipping_charge }}</p>
+
+    <h3>Total Amount: ₹{{ total|floatformat:2 }}</h3>
+
+    <hr>
+
+    <h2>Delivery Address</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="delivery_address">
+            Enter your delivery address:
+        </label>
+
+        <br><br>
+
+        <textarea
+            name="delivery_address"
+            id="delivery_address"
+            rows="5"
+            cols="40"
+            placeholder="Enter your full delivery address"
+            required
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">Place Order</button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'cart' %}">Back to Cart</a>
+
+</body>
+</html>

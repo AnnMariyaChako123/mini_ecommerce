@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+
+    <h1>Order Details</h1>
+    <p>Debug Order ID: {{ debug_order_id }}</p>
+    <p>Debug Items Count: {{ debug_items_count }}</p>
+
+    <h2>Order {{ order.id }}</h2>
+
+    <p>
+        <strong>Order Date:</strong>
+        {{ order.created_at|date:"d-m-Y H:i" }}
+    </p>
+
+    <p>
+        <strong>Order Status:</strong>
+        {{ order.status }}
+    </p>
+
+    <p>
+        <strong>Total Amount:</strong>
+        ₹{{ order.total_amount|floatformat:2 }}
+    </p>
+
+    <hr>
+
+    <h2>Products in This Order</h2>
+
+    {% for item in items %}
+        <div>
+            <h3>{{ item.product.name }}</h3>
+            <p>Quantity: {{ item.quantity }}</p>
+            <p>Price per item: ₹{{ item.price|floatformat:2 }}</p>
+            <p>Subtotal: ₹{{ item.price|floatformat:2 }} × {{ item.quantity }}</p>
+            <p>Total: ₹{% widthratio item.price 1 item.quantity %}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No products found in this order.</p>
+    {% endfor %}
+
+    <a href="{% url 'order_history' %}">Back to Order History</a>
+    <br><br>
+    <a href="{% url 'cart' %}">Back to Cart</a>
+
+</body>
+</html>

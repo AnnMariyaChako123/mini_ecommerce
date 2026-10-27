@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow Beauty</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #fff8fa;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        h1 {
+            color: #e91e63;
+            margin: 0;
+        }
+
+        .search {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+
+        nav {
+            background: #e91e63;
+            padding: 12px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+
+        
+        .auth {
+            background: #fff0f5;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #f5c6d6;
+        }
+
+        .auth-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 14px;
+            box-shadow: 0 3px 10px #00000010;
+        }
+
+        .auth form {
+            display: inline;
+            margin: 0;
+        }
+
+        .auth-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+
+        .wishlist-btn {
+            background: #e91e63;
+        }
+
+        .orders-btn {
+            background: #8e44ad;
+        }
+
+        .logout-btn {
+            background: #555;
+        }
+
+        .auth-btn:hover {
+            opacity: 0.85;
+        }
+
+        .banner {
+            background: #ffe0eb;
+            padding: 35px 15px;
+            text-align: center;
+            color: #ad1457;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .product {
+            background: white;
+            padding: 18px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #00000010;
+            min-width: 0;
+        }
+
+        .product h3 {
+            color: #333;
+        }
+
+        .price {
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .product-button {
+            display: inline-block;
+            margin-top: 10px;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .product-button:hover {
+            opacity: 0.85;
+        }
+
+        /* Customer Reviews */
+        .reviews {
+            margin-top: 18px;
+            padding: 12px;
+            background: #fff8fa;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #f3c5d5;
+            padding: 8px 0;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-rating {
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .review-comment {
+            overflow-wrap: anywhere;
+        }
+
+        /* Related Products */
+        .related-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f3c5d5;
+        }
+
+        .related-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            background-color: #ad1457;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .pagination a:hover {
+            background-color: #e91e63;
+        }
+
+        @media (max-width: 600px) {
+            .auth {
+                justify-content: center;
+                padding: 15px 10px;
+            }
+
+            .auth-box {
+                justify-content: center;
+            }
+
+            .products {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Glow Beauty</h1>
+
+        <form method="GET">
+            <input class="search"
+                   type="text"
+                   name="search"
+                   placeholder="Search products..."
+                   value="{{ search }}">
+
+            <button type="submit">Search</button>
+        </form>
+    </header>
+
+    
+    <div class="auth">
+
+        {% if user.is_authenticated %}
+
+            <div class="auth-box">
+
+                <span>
+                    Welcome, <strong>{{ user.username }}</strong>!
+                </span>
+
+                <a href="{% url 'wishlist' %}"
+                   class="auth-btn wishlist-btn">
+                    ❤️ My Wishlist
+                </a>
+
+                <a href="{% url 'order_history' %}"
+                   class="auth-btn orders-btn">
+                    📦 My Orders
+                </a>
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="auth-btn logout-btn">
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <div class="auth-box">
+
+                <a href="{% url 'login' %}"
+                   class="auth-btn wishlist-btn">
+                    Login
+                </a>
+
+                <a href="{% url 'register' %}"
+                   class="auth-btn orders-btn">
+                    Register
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    
+    <nav>
+        <a href="#">Skincare</a>
+        <a href="#">Makeup</a>
+        <a href="#">Haircare</a>
+    </nav>
+
+    
+    <section class="banner">
+        <h2>Your beauty, your style</h2>
+        <p>Discover your favourite beauty products</p>
+    </section>
+
+    <h2 style="text-align: center;">Our Products</h2>
+
+    
+    <section class="products">
+
+        {% for product in products %}
+
+            <div class="product">
+
+                {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                         alt="{{ product.name }}"
+                         width="150">
+                {% endif %}
+
+                <h3>{{ product.name }}</h3>
+
+                <p>{{ product.brand }}</p>
+
+                <p>Original price: ₹{{ product.price }}</p>
+
+                <p>Discount: {{ product.disc_perc }}%</p>
+
+                <p class="price">
+                    Final price: ₹{{ product.get_disc_perc }}
+                </p>
+
+                {% if product.stock %}
+                    <p>In stock: {{ product.stock }}</p>
+                {% else %}
+                    <p>Out of stock</p>
+                {% endif %}
+
+                
+                
+                <form method="POST"
+                        action="{% url 'add_to_cart' product.id %}"
+                        style="margin-top: 10px;">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="product-button"
+                            style="background:#e91e63;">
+                        Add to Bag
+                    </button>
+
+                </form>
+
+                
+                <a class="product-button"
+                   href="{% url 'add_to_wishlist' product.id %}"
+                   style="background:#e91e63;">
+                    ❤️ Add to Wishlist
+                </a>
+
+               
+                <a class="product-button"
+                   href="{% url 'add_review' product.id %}"
+                   style="background:#ad1457;">
+                    ⭐ Write a Review
+                </a>
+
+                
+                <div class="reviews">
+
+                    <h4>⭐ Customer Reviews</h4>
+
+                    {% for review in product.reviews.all %}
+
+                        <div class="review-item">
+
+                            <p>
+                                <strong>
+                                    {{ review.user.username }}
+                                </strong>
+                            </p>
+
+                            <p class="review-rating">
+                                ⭐ {{ review.rating }}/5
+                            </p>
+
+                            <p class="review-comment">
+                                {{ review.comment }}
+                            </p>
+
+                        </div>
+
+                    {% empty %}
+
+                        <p>No reviews yet.</p>
+
+                    {% endfor %}
+
+                </div>
+
+                
+                <div class="reviews">
+
+                    <h4> Related Products</h4>
+
+                    {% for related in products %}
+
+                        {% if related.category == product.category and related.id != product.id %}
+
+                            <div class="related-item">
+
+                                <strong>{{ related.name }}</strong>
+
+                                <p>Price: ₹{{ related.price }}</p>
+
+                            </div>
+
+                        {% endif %}
+
+                    {% empty %}
+
+                        <p>No related products available.</p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <p>No products available yet.</p>
+
+        {% endfor %}
+
+    </section>
+
+
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+
+            <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}&category={{ selected_category }}">
+                Previous
+            </a>
+
+        {% endif %}
+
+        <span>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+
+            <a href="?page={{ page_obj.next_page_number }}&search={{ search }}&category={{ selected_category }}">
+                Next
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

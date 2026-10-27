@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product API Test</title>
+</head>
+<body>
+    <h1>Glow Beauty - API Products</h1>
+    <div id="products">Loading products...</div>
+
+    <script>
+        fetch("/api/products/")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("API request failed");
+                }
+                return response.json();
+            })
+            .then(products => {
+                const container = document.getElementById("products");
+                container.innerHTML = "";
+
+                products.forEach(product => {
+                    const item = document.createElement("div");
+                    const name = document.createElement("h3");
+                    const price = document.createElement("p");
+
+                    name.textContent = product.name;
+                    price.textContent = "Price: ₹" + product.price;
+
+                    item.appendChild(name);
+                    item.appendChild(price);
+                    container.appendChild(item);
+                });
+            })
+            .catch(error => {
+                document.getElementById("products").textContent =
+                    "Could not load products.";
+                console.error(error);
+            });
+    </script>
+</body>
+</html>
+

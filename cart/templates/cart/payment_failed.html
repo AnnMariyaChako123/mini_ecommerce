@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - Mini E-commerce</title>
+</head>
+<body>
+
+    <h1>Payment Failed</h1>
+
+    <p>Your payment for Order #{{ order.id }} was not completed.</p>
+
+    <p>Payment Status: {{ order.payment_status }}</p>
+
+    <p>Please try placing your order again.</p>
+
+    <a href="{% url 'order_history' %}">View My Orders</a>
+
+    <br><br>
+
+    <a href="{% url 'cart' %}">Back to Cart</a>
+
+</body>
+</html>

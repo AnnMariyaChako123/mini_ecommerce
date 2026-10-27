@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Mini E-commerce</title>
+</head>
+<body>
+
+    <h2>Complete Your Payment</h2>
+
+    <p>Order ID: {{ order.id }}</p>
+    <p>Total Amount: ₹{{ order.total_amount }}</p>
+
+    <button type="button" id="pay-button">
+        Pay Now
+    </button>
+
+    <p id="payment-message"></p>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        const payButton = document.getElementById("pay-button");
+        const message = document.getElementById("payment-message");
+
+        const options = {
+            key: "{{ razorpay_key_id|escapejs }}",
+            amount: "{{ amount|escapejs }}",
+            currency: "INR",
+            name: "Mini E-commerce",
+            description: "Order #{{ order.id }}",
+            order_id: "{{ razorpay_order_id|escapejs }}",
+
+            handler: function (response) {
+                message.textContent = "Payment received. Verifying...";
+                payButton.disabled = true;
+
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = "{% url 'verify_payment' %}";
+
+                const fields = {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                };
+
+                for (const [name, value] of Object.entries(fields)) {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = name;
+                    input.value = value;
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+
+            modal: {
+                ondismiss: function () {
+                    message.textContent =
+                        "Payment window closed. Payment is not confirmed.";
+                    payButton.disabled = false;
+                }
+            },
+
+            theme: {
+                color: "#3399cc"
+            }
+        };
+
+        const razorpay = new Razorpay(options);
+
+        razorpay.on("payment.failed", function (response) {
+            const error = response.error || {};
+
+            console.error("RAZORPAY PAYMENT FAILED:", error);
+
+            message.textContent =
+                "Payment failed: " +
+                (error.description || "Unknown error");
+
+            payButton.disabled = true;
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = "{% url 'payment_failed' %}";
+
+            const fields = {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                razorpay_order_id: "{{ razorpay_order_id|escapejs }}"
+            };
+
+            for (const [name, value] of Object.entries(fields)) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+
+        payButton.addEventListener("click", function () {
+            message.textContent = "";
+            payButton.disabled = true;
+
+            try {
+                razorpay.open();
+            } catch (error) {
+                console.error("RAZORPAY OPEN ERROR:", error);
+                message.textContent = "Unable to open payment window.";
+                payButton.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
