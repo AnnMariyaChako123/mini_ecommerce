@@ -2,10 +2,10 @@ Mini E-commerce Website
 
 Project Description
 A basic e-commerce website developed using Python and Django. This project demonstrates the implementation of essential e-commerce functionalities, including product management, shopping cart, checkout, and order management.
-Features
+
+Features:
 
 *Product, category, and brand management
-
 *Product search, filtering, and pagination
 *Product images, pricing, discounts, and stock management
 *Shopping cart and quantity management
