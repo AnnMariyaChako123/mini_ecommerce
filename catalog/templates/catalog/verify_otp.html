@@ -1,26 +1,211 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Verify OTP</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff0f5, #ffe1eb, #fff7fa);
+        }
+
+        .verify-container {
+            width: 100%;
+            max-width: 430px;
+            padding: 38px 32px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(210, 60, 110, 0.15);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff3f6c;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        .icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff0f5;
+            border-radius: 50%;
+            font-size: 32px;
+        }
+
+        h2 {
+            color: #30232a;
+            font-size: 25px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #c62828;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            color: #444;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        input[name="otp"] {
+            width: 100%;
+            padding: 15px 10px;
+            margin-bottom: 22px;
+            border: 1px solid #e4d5dc;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 10px;
+            transition: 0.2s;
+        }
+
+        input[name="otp"]:focus {
+            border-color: #ff3f6c;
+            box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #ff3f6c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #e92e5c;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 23px;
+            color: #ff3f6c;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 28px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .verify-container {
+                padding: 30px 22px;
+            }
+
+            h2 {
+                font-size: 23px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h2>Verify Your Email</h2>
+    <div class="verify-container">
 
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+        <div class="logo">Glow Beauty</div>
 
-    <form method="POST">
-        {% csrf_token %}
-        <label>Enter the 6-digit OTP</label>
-        <input type="text" name="otp" maxlength="6"
-               pattern="[0-9]{6}" required>
-        <button type="submit">Verify OTP</button>
-    </form>
+        <div class="icon">💌</div>
 
-    <p><a href="{% url 'login' %}">Request a new OTP</a></p>
+        <h2>Verify Your Email</h2>
+
+        <p class="description">
+            Enter the 6-digit verification code sent to your email
+            address to securely access your account.
+        </p>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="message">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="otp">Enter the 6-digit OTP</label>
+
+            <input
+                type="text"
+                id="otp"
+                name="otp"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                required
+            >
+
+            <button type="submit">Verify OTP</button>
+        </form>
+
+        <a href="{% url 'login' %}" class="back-link">
+            ← Request a New OTP
+        </a>
+
+        <div class="footer">
+            © Glow Beauty. All rights reserved.
+        </div>
+
+    </div>
 </body>
 </html>

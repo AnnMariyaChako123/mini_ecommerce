@@ -1,25 +1,230 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Failed - Mini E-commerce</title>
+    <title>Payment Failed | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff5f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .payment-container {
+            width: 100%;
+            max-width: 560px;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(255, 63, 108, 0.12);
+        }
+
+        .brand {
+            color: #ff3f6c;
+            font-size: 27px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .failed-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #fff0f0;
+            color: #e53935;
+            font-size: 43px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #d93030;
+            margin-bottom: 14px;
+        }
+
+        .message {
+            font-size: 15px;
+            color: #777;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .order-details {
+            background: #fff7f9;
+            border: 1px solid #ffe0e7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e3e6;
+            font-size: 15px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .payment-status {
+            color: #d93030;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #ff3f6c;
+            color: #fff;
+            border: 1px solid #ff3f6c;
+        }
+
+        .primary-btn:hover {
+            background: #e92f5b;
+        }
+
+        .secondary-btn {
+            background: #fff;
+            color: #ff3f6c;
+            border: 1px solid #ff3f6c;
+        }
+
+        .secondary-btn:hover {
+            background: #fff0f4;
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            color: #999;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .failed-icon {
+                width: 72px;
+                height: 72px;
+                font-size: 36px;
+            }
+
+            .order-details {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Payment Failed</h1>
+    <div class="payment-container">
 
-    <p>Your payment for Order #{{ order.id }} was not completed.</p>
+        <div class="brand">Glow Beauty</div>
 
-    <p>Payment Status: {{ order.payment_status }}</p>
+        <div class="failed-icon">&#10005;</div>
 
-    <p>Please try placing your order again.</p>
+        <h1>Payment Failed</h1>
 
-    <a href="{% url 'order_history' %}">View My Orders</a>
+        <p class="message">
+            Your payment for Order #{{ order.id }} was not completed.
+            Don't worry — you can review your order details below.
+        </p>
 
-    <br><br>
+        <div class="order-details">
 
-    <a href="{% url 'cart' %}">Back to Cart</a>
+            <div class="detail-row">
+                <span class="detail-label">Order ID</span>
+                <span class="detail-value">#{{ order.id }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Payment Status</span>
+                <span class="detail-value payment-status">
+                    {{ order.payment_status }}
+                </span>
+            </div>
+
+        </div>
+
+        <p class="message">
+            Please check your order before trying again.
+        </p>
+
+        <div class="buttons">
+
+            <a href="{% url 'order_history' %}" class="btn primary-btn">
+                View My Orders
+            </a>
+
+            <a href="{% url 'cart' %}" class="btn secondary-btn">
+                Back to Cart
+            </a>
+
+        </div>
+
+        <p class="footer-note">
+            Need help? Please contact our support team.<br>
+            Thank you for choosing Glow Beauty.
+        </p>
+
+    </div>
 
 </body>
 </html>

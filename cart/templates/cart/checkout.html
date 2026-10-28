@@ -1,84 +1,356 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+    <title>Checkout | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff5f7;
+            color: #333;
+            min-height: 100vh;
+            padding: 35px 18px;
+        }
+
+        .checkout-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .brand {
+            text-align: center;
+            color: #ff3f6c;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 35px;
+            font-size: 14px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .checkout-card {
+            background: #fff;
+            padding: 27px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(255, 63, 108, 0.09);
+            margin-bottom: 22px;
+        }
+
+        .checkout-card h2 {
+            font-size: 21px;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f1e5e8;
+            color: #333;
+        }
+
+        .product-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f2e8eb;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-name {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 9px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .product-details strong {
+            color: #444;
+            text-align: right;
+        }
+
+        .discount-price {
+            color: #ff3f6c !important;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 17px 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .price-row strong {
+            color: #333;
+            text-align: right;
+        }
+
+        .total-row {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff3f6c;
+        }
+
+        .empty-cart {
+            color: #888;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 135px;
+            padding: 14px;
+            border: 1px solid #e4dadd;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #ff3f6c;
+            box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.1);
+        }
+
+        textarea::placeholder {
+            color: #aaa;
+        }
+
+        .place-order-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #ff3f6c;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .place-order-btn:hover {
+            background: #e92f5b;
+            transform: translateY(-1px);
+        }
+
+        .secure-note {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+
+        .back-cart {
+            display: inline-block;
+            margin-top: 5px;
+            color: #ff3f6c;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .back-cart:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .checkout-card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Checkout</h1>
+<div class="checkout-container">
 
-    <h2>Order Summary</h2>
+    <div class="brand">Glow Beauty</div>
+    <p class="page-subtitle">Beauty delivered to your doorstep</p>
 
-    {% for item in items %}
+    <h1 class="page-title">Secure Checkout</h1>
+
+    <div class="checkout-layout">
+
+        
         <div>
-            <h3>{{ item.product.name }}</h3>
+            <div class="checkout-card">
+                <h2>Delivery Address</h2>
 
-            <p>
-                Original Price:
-                ₹{{ item.product.price|floatformat:2 }}
-            </p>
+                <form method="POST">
+                    {% csrf_token %}
 
-            <p>
-                Discounted Price:
-                ₹{{ item.discounted_price|floatformat:2 }}
-            </p>
+                    <div class="form-group">
+                        <label for="delivery_address">
+                            Enter your full delivery address
+                        </label>
 
-            <p>
-                Quantity: {{ item.quantity }}
-            </p>
+                        <textarea
+                            name="delivery_address"
+                            id="delivery_address"
+                            placeholder="House name, street, city, district, state and PIN code"
+                            required
+                        ></textarea>
+                    </div>
 
-            <p>
-                Subtotal: ₹{{ item.subtotal|floatformat:2 }}
-            </p>
+                    <button type="submit" class="place-order-btn">
+                        Place Order
+                    </button>
+
+                    <p class="secure-note">
+                        Please check your delivery address before placing your order.
+                    </p>
+                </form>
+            </div>
+
+            <a href="{% url 'cart' %}" class="back-cart">
+                &larr; Back to Cart
+            </a>
         </div>
 
-        <hr>
-    {% empty %}
-        <p>Your cart is empty.</p>
-    {% endfor %}
+        
+        <div>
+            <div class="checkout-card">
+                <h2>Order Summary</h2>
 
-    <h2>Price Details</h2>
+                {% for item in items %}
+                    <div class="product-item">
 
-    <p>Subtotal: ₹{{ subtotal|floatformat:2 }}</p>
+                        <div class="product-name">
+                            {{ item.product.name }}
+                        </div>
 
-    <p>Tax (5%): ₹{{ tax|floatformat:2 }}</p>
-    
-    <p>Shipping Charge: ₹{{ shipping_charge }}</p>
+                        <div class="product-details">
+                            <span>Original Price</span>
+                            <strong>
+                                ₹{{ item.product.price|floatformat:2 }}
+                            </strong>
+                        </div>
 
-    <h3>Total Amount: ₹{{ total|floatformat:2 }}</h3>
+                        <div class="product-details">
+                            <span>Discounted Price</span>
+                            <strong class="discount-price">
+                                ₹{{ item.discounted_price|floatformat:2 }}
+                            </strong>
+                        </div>
 
-    <hr>
+                        <div class="product-details">
+                            <span>Quantity</span>
+                            <strong>{{ item.quantity }}</strong>
+                        </div>
 
-    <h2>Delivery Address</h2>
+                        <div class="product-details">
+                            <span>Subtotal</span>
+                            <strong>
+                                ₹{{ item.subtotal|floatformat:2 }}
+                            </strong>
+                        </div>
 
-    <form method="POST">
-        {% csrf_token %}
+                    </div>
+                {% empty %}
+                    <p class="empty-cart">Your cart is empty.</p>
+                {% endfor %}
+            </div>
 
-        <label for="delivery_address">
-            Enter your delivery address:
-        </label>
+            <div class="checkout-card">
+                <h2>Price Details</h2>
 
-        <br><br>
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <strong>₹{{ subtotal|floatformat:2 }}</strong>
+                </div>
 
-        <textarea
-            name="delivery_address"
-            id="delivery_address"
-            rows="5"
-            cols="40"
-            placeholder="Enter your full delivery address"
-            required
-        ></textarea>
+                <div class="price-row">
+                    <span>Tax (5%)</span>
+                    <strong>₹{{ tax|floatformat:2 }}</strong>
+                </div>
 
-        <br><br>
+                <div class="price-row">
+                    <span>Shipping Charge</span>
+                    <strong>₹{{ shipping_charge|floatformat:2 }}</strong>
+                </div>
 
-        <button type="submit">Place Order</button>
-    </form>
+                <div class="price-row total-row">
+                    <span>Total Amount</span>
+                    <strong class="discount-price">
+                        ₹{{ total|floatformat:2 }}
+                    </strong>
+                </div>
 
-    <br>
+                <p class="secure-note">
+                    Your order total is calculated by the server.
+                </p>
+            </div>
+        </div>
 
-    <a href="{% url 'cart' %}">Back to Cart</a>
+    </div>
+</div>
 
 </body>
 </html>

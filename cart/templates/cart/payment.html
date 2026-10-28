@@ -1,22 +1,244 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - Mini E-commerce</title>
+    <title>Payment | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff5f7;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            width: 100%;
+            max-width: 520px;
+            background: #fff;
+            padding: 38px 32px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(255, 63, 108, 0.12);
+            text-align: center;
+        }
+
+        .brand {
+            color: #ff3f6c;
+            font-size: 29px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .payment-icon {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fff0f4;
+            color: #ff3f6c;
+            font-size: 34px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #777;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .order-details {
+            background: #fff7f9;
+            border: 1px solid #ffe0e8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e3e7;
+            font-size: 15px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .amount {
+            color: #ff3f6c;
+            font-size: 21px;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: #ff3f6c;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .pay-button:hover:not(:disabled) {
+            background: #e92f5b;
+            transform: translateY(-1px);
+        }
+
+        .pay-button:disabled {
+            background: #f3a1b4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #payment-message {
+            display: none;
+            margin-top: 18px;
+            padding: 13px;
+            border-radius: 8px;
+            background: #fff0f4;
+            color: #a52d4b;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        #payment-message.visible {
+            display: block;
+        }
+
+        .secure-note {
+            margin-top: 22px;
+            color: #888;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ff3f6c;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 28px 20px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .brand {
+                font-size: 26px;
+            }
+
+            .order-details {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h2>Complete Your Payment</h2>
+    <div class="payment-container">
 
-    <p>Order ID: {{ order.id }}</p>
-    <p>Total Amount: ₹{{ order.total_amount }}</p>
+        <div class="brand">Glow Beauty</div>
+        <p class="subtitle">Beauty delivered to your doorstep</p>
 
-    <button type="button" id="pay-button">
-        Pay Now
-    </button>
+        <div class="payment-icon">&#128179;</div>
 
-    <p id="payment-message"></p>
+        <h1>Complete Your Payment</h1>
+
+        <p class="description">
+            Your order is almost ready! Complete your payment securely
+            using Razorpay to continue.
+        </p>
+
+        <div class="order-details">
+
+            <div class="detail-row">
+                <span class="detail-label">Order ID</span>
+                <span class="detail-value">#{{ order.id }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value amount">
+                    ₹{{ order.total_amount|floatformat:2 }}
+                </span>
+            </div>
+
+        </div>
+
+        <button type="button" id="pay-button" class="pay-button">
+            Pay Now
+        </button>
+
+        <p id="payment-message" role="status" aria-live="polite"></p>
+
+        <p class="secure-note">
+            Payment is processed through Razorpay.<br>
+            Never share your OTP or payment credentials with anyone.
+        </p>
+
+        <a href="{% url 'cart' %}" class="back-link">
+            &larr; Back to Cart
+        </a>
+
+    </div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -24,16 +246,21 @@
         const payButton = document.getElementById("pay-button");
         const message = document.getElementById("payment-message");
 
+        function showMessage(text) {
+            message.textContent = text;
+            message.classList.add("visible");
+        }
+
         const options = {
             key: "{{ razorpay_key_id|escapejs }}",
             amount: "{{ amount|escapejs }}",
             currency: "INR",
-            name: "Mini E-commerce",
+            name: "Glow Beauty",
             description: "Order #{{ order.id }}",
             order_id: "{{ razorpay_order_id|escapejs }}",
 
             handler: function (response) {
-                message.textContent = "Payment received. Verifying...";
+                showMessage("Payment received. Verifying securely...");
                 payButton.disabled = true;
 
                 const form = document.createElement("form");
@@ -61,60 +288,78 @@
 
             modal: {
                 ondismiss: function () {
-                    message.textContent =
-                        "Payment window closed. Payment is not confirmed.";
+                    showMessage(
+                        "Payment window closed. Payment has not been confirmed. " +
+                        "Check your order status before trying again."
+                    );
                     payButton.disabled = false;
                 }
             },
 
             theme: {
-                color: "#3399cc"
+                color: "#ff3f6c"
             }
         };
 
-        const razorpay = new Razorpay(options);
+        let razorpay = null;
 
-        razorpay.on("payment.failed", function (response) {
-            const error = response.error || {};
+        if (typeof Razorpay !== "undefined") {
+            razorpay = new Razorpay(options);
 
-            console.error("RAZORPAY PAYMENT FAILED:", error);
+            razorpay.on("payment.failed", function (response) {
+                const error = response.error || {};
 
-            message.textContent =
-                "Payment failed: " +
-                (error.description || "Unknown error");
+                console.error("RAZORPAY PAYMENT FAILED:", error);
 
+                showMessage(
+                    "Payment failed: " +
+                    (error.description || "Unknown error")
+                );
+
+                payButton.disabled = true;
+
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = "{% url 'payment_failed' %}";
+
+                const fields = {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    razorpay_order_id: "{{ razorpay_order_id|escapejs }}"
+                };
+
+                for (const [name, value] of Object.entries(fields)) {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = name;
+                    input.value = value;
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        } else {
+            showMessage(
+                "Razorpay could not load. Check your internet connection and refresh the page."
+            );
             payButton.disabled = true;
-
-            const form = document.createElement("form");
-            form.method = "POST";
-            form.action = "{% url 'payment_failed' %}";
-
-            const fields = {
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                razorpay_order_id: "{{ razorpay_order_id|escapejs }}"
-            };
-
-            for (const [name, value] of Object.entries(fields)) {
-                const input = document.createElement("input");
-                input.type = "hidden";
-                input.name = name;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-        });
+        }
 
         payButton.addEventListener("click", function () {
+            if (!razorpay) {
+                showMessage("Payment service is unavailable. Please refresh the page.");
+                return;
+            }
+
             message.textContent = "";
+            message.classList.remove("visible");
             payButton.disabled = true;
 
             try {
                 razorpay.open();
             } catch (error) {
                 console.error("RAZORPAY OPEN ERROR:", error);
-                message.textContent = "Unable to open payment window.";
+                showMessage("Unable to open payment window. Please try again.");
                 payButton.disabled = false;
             }
         });

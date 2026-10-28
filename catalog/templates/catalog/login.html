@@ -1,41 +1,214 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Login</title>
+    <title>Customer Login | Glow Beauty</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f8, #fce4ec);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 430px;
+            padding: 38px 32px;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #f8dce7;
+            box-shadow: 0 10px 35px rgba(173, 20, 87, 0.13);
+        }
+
+        .brand {
+            text-align: center;
+            color: #e1306c;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            background: #fff0f3;
+            color: #b42355;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e8ccd7;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input[type="email"]:focus {
+            border-color: #e1306c;
+            box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.10);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 25px;
+            background: #e1306c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #bd2056;
+            transform: translateY(-1px);
+        }
+
+        .register-link {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #e1306c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            color: #e1306c;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 22px;
+            }
+
+            .brand {
+                font-size: 26px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h2>Customer Login</h2>
-    <p>Login using your registered email address.</p>
+    <div class="login-container">
 
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+        <div class="brand">Glow Beauty</div>
+        <div class="subtitle">Beauty essentials, all in one place</div>
 
-    <form method="POST">
-        {% csrf_token %}
+        <h2>Welcome Back 💗</h2>
 
-        <label for="email">Email Address</label>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            required
-        >
+        <p class="description">
+            Login using your registered email address.
+            We'll send you an OTP to verify your account.
+        </p>
 
-        <button type="submit">Send OTP</button>
-    </form>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
 
-    <p>
-        New customer?
-        <a href="{% url 'register' %}">Register</a>
-    </p>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="login-btn">
+                Send OTP
+            </button>
+        </form>
+
+        <div class="register-link">
+            New customer?
+            <a href="{% url 'register' %}">Create an account</a>
+        </div>
+
+        <a href="/" class="back-home">← Back to Home</a>
+
+    </div>
 
 </body>
 </html>

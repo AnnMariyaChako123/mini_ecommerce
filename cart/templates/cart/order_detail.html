@@ -1,53 +1,353 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
+    <title>Order Details | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff5f7;
+            color: #333;
+            min-height: 100vh;
+            padding: 35px 18px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            text-align: center;
+            color: #ff3f6c;
+            font-size: 29px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 29px;
+            margin-bottom: 28px;
+            color: #333;
+        }
+
+        .card {
+            background: #fff;
+            padding: 26px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(255, 63, 108, 0.08);
+            margin-bottom: 23px;
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 20px;
+            padding-bottom: 13px;
+            border-bottom: 1px solid #f1e5e8;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 13px 0;
+            border-bottom: 1px solid #f5edef;
+            font-size: 15px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            text-align: right;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .order-number {
+            color: #ff3f6c;
+            font-weight: bold;
+        }
+
+        .amount {
+            color: #ff3f6c;
+            font-size: 19px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #fff0f4;
+            color: #d92e59;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .product-card {
+            padding: 18px;
+            border: 1px solid #f3e5e9;
+            border-radius: 11px;
+            margin-bottom: 15px;
+            background: #fffdfd;
+        }
+
+        .product-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .product-card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .product-row strong {
+            color: #444;
+            text-align: right;
+        }
+
+        .product-total {
+            border-top: 1px solid #f0e4e7;
+            margin-top: 5px;
+            padding-top: 13px;
+            font-size: 15px;
+        }
+
+        .product-total strong {
+            color: #ff3f6c;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #888;
+            padding: 22px 0;
+            line-height: 1.6;
+        }
+
+        .debug-info {
+            background: #fff9e9;
+            border: 1px solid #f5e4b5;
+            border-radius: 9px;
+            padding: 14px 17px;
+            margin-bottom: 20px;
+            color: #7c6428;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .debug-info strong {
+            color: #5f4a16;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 180px;
+            text-align: center;
+            text-decoration: none;
+            padding: 14px 18px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #ff3f6c;
+            color: #fff;
+            border: 1px solid #ff3f6c;
+        }
+
+        .primary-btn:hover {
+            background: #e92f5b;
+        }
+
+        .secondary-btn {
+            background: #fff;
+            color: #ff3f6c;
+            border: 1px solid #ff3f6c;
+        }
+
+        .secondary-btn:hover {
+            background: #fff0f4;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 19px;
+            }
+
+            .detail-row {
+                font-size: 14px;
+            }
+
+            .product-card {
+                padding: 15px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Order Details</h1>
-    <p>Debug Order ID: {{ debug_order_id }}</p>
-    <p>Debug Items Count: {{ debug_items_count }}</p>
+    <div class="container">
 
-    <h2>Order {{ order.id }}</h2>
+        <div class="brand">Glow Beauty</div>
+        <p class="subtitle">Your order information</p>
 
-    <p>
-        <strong>Order Date:</strong>
-        {{ order.created_at|date:"d-m-Y H:i" }}
-    </p>
+        <h1 class="page-title">Order Details</h1>
 
-    <p>
-        <strong>Order Status:</strong>
-        {{ order.status }}
-    </p>
-
-    <p>
-        <strong>Total Amount:</strong>
-        ₹{{ order.total_amount|floatformat:2 }}
-    </p>
-
-    <hr>
-
-    <h2>Products in This Order</h2>
-
-    {% for item in items %}
-        <div>
-            <h3>{{ item.product.name }}</h3>
-            <p>Quantity: {{ item.quantity }}</p>
-            <p>Price per item: ₹{{ item.price|floatformat:2 }}</p>
-            <p>Subtotal: ₹{{ item.price|floatformat:2 }} × {{ item.quantity }}</p>
-            <p>Total: ₹{% widthratio item.price 1 item.quantity %}</p>
+        
+        <div class="debug-info">
+            <p>
+                <strong>Debug Order ID:</strong>
+                {{ debug_order_id }}
+            </p>
+            <p>
+                <strong>Debug Items Count:</strong>
+                {{ debug_items_count }}
+            </p>
         </div>
-        <hr>
-    {% empty %}
-        <p>No products found in this order.</p>
-    {% endfor %}
 
-    <a href="{% url 'order_history' %}">Back to Order History</a>
-    <br><br>
-    <a href="{% url 'cart' %}">Back to Cart</a>
+        
+        <div class="card">
+            <h2>
+                Order <span class="order-number">#{{ order.id }}</span>
+            </h2>
+
+            <div class="detail-row">
+                <span class="detail-label">Order Date</span>
+                <span class="detail-value">
+                    {{ order.created_at|date:"d-m-Y H:i" }}
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Order Status</span>
+                <span class="detail-value">
+                    <span class="status">{{ order.status }}</span>
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value amount">
+                    ₹{{ order.total_amount|floatformat:2 }}
+                </span>
+            </div>
+        </div>
+
+        
+        <div class="card">
+            <h2>Products in This Order</h2>
+
+            {% for item in items %}
+                <div class="product-card">
+
+                    <h3>{{ item.product.name }}</h3>
+
+                    <div class="product-row">
+                        <span>Quantity</span>
+                        <strong>{{ item.quantity }}</strong>
+                    </div>
+
+                    <div class="product-row">
+                        <span>Price per item</span>
+                        <strong>
+                            ₹{{ item.price|floatformat:2 }}
+                        </strong>
+                    </div>
+
+                    <div class="product-row">
+                        <span>Subtotal calculation</span>
+                        <strong>
+                            ₹{{ item.price|floatformat:2 }} × {{ item.quantity }}
+                        </strong>
+                    </div>
+
+                    <div class="product-row product-total">
+                        <span>Product Total</span>
+                        <strong>
+                            ₹{% widthratio item.price 1 item.quantity %}
+                        </strong>
+                    </div>
+
+                </div>
+            {% empty %}
+                <p class="empty-message">
+                    No products found in this order.
+                </p>
+            {% endfor %}
+        </div>
+
+        <div class="buttons">
+            <a href="{% url 'order_history' %}" class="btn primary-btn">
+                Back to Order History
+            </a>
+
+            <a href="{% url 'cart' %}" class="btn secondary-btn">
+                Back to Cart
+            </a>
+        </div>
+
+    </div>
 
 </body>
 </html>

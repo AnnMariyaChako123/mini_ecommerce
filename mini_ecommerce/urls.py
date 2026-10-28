@@ -33,6 +33,7 @@ urlpatterns = [
     path('sales-dashboard/',sales_dashboard_page,name='sales_dashboard_page',),
     path("api-test/", api_test_page, name="api_test_page"),
     path('razorpay/webhook/', razorpay_webhook, name='razorpay_webhook'),
+    path("chatbot/", include("chatbot.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(

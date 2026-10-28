@@ -3,34 +3,208 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Write a Review</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Review | Glow Beauty</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff5f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .review-container {
+            width: 100%;
+            max-width: 550px;
+            background: #fff;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(255, 63, 108, 0.12);
+        }
+
+        .brand {
+            text-align: center;
+            color: #ff3f6c;
+            font-size: 27px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 23px;
+            margin-bottom: 25px;
+            color: #333;
+            overflow-wrap: anywhere;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #e5dce0;
+            border-radius: 9px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #fff;
+            color: #333;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: #ff3f6c;
+            box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.1);
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        textarea::placeholder {
+            color: #aaa;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #ff3f6c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #e92f5b;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #ff3f6c;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .review-note {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 22px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .review-container {
+                padding: 25px 20px;
+            }
+
+            .brand {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h2>Review: {{ product.name }}</h2>
+    <div class="review-container">
 
-    <form method="post">
-        {% csrf_token %}
+        <div class="brand">Glow Beauty</div>
+        <p class="subtitle">Your feedback makes us better!</p>
 
-        <label>Rating:</label>
-        <select name="rating" required>
-            <option value="">Choose rating</option>
-            <option value="1">⭐ 1</option>
-            <option value="2">⭐⭐ 2</option>
-            <option value="3">⭐⭐⭐ 3</option>
-            <option value="4">⭐⭐⭐⭐ 4</option>
-            <option value="5">⭐⭐⭐⭐⭐ 5</option>
-        </select>
+        <h2>Review: {{ product.name }}</h2>
 
-        <br><br>
+        <form method="post">
+            {% csrf_token %}
 
-        <label>Your Review:</label>
-        <textarea name="comment" required></textarea>
+            <div class="form-group">
+                <label for="rating">Your Rating</label>
 
-        <br><br>
+                <select id="rating" name="rating" required>
+                    <option value="">Choose your rating</option>
+                    <option value="1">⭐ 1 - Poor</option>
+                    <option value="2">⭐⭐ 2 - Fair</option>
+                    <option value="3">⭐⭐⭐ 3 - Good</option>
+                    <option value="4">⭐⭐⭐⭐ 4 - Very Good</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 - Excellent</option>
+                </select>
+            </div>
 
-        <button type="submit">Submit Review</button>
-    </form>
+            <div class="form-group">
+                <label for="comment">Your Review</label>
+
+                <textarea
+                    id="comment"
+                    name="comment"
+                    placeholder="Share your experience with this product..."
+                    required
+                ></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Submit Review
+            </button>
+        </form>
+
+        <a href="javascript:history.back()" class="back-link">
+            ← Go Back
+        </a>
+
+        <p class="review-note">
+            Thank you for choosing Glow Beauty.<br>
+            We appreciate your valuable feedback!
+        </p>
+
+    </div>
 
 </body>
 </html>

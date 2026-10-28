@@ -23,55 +23,233 @@
 </body>
 </html> -->
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Registration</title>
+
+    <title>Customer Registration | Glow Beauty</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px 15px;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f8, #fce4ec);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 460px;
+            padding: 35px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(173, 20, 87, 0.13);
+            border: 1px solid #f8dce7;
+        }
+
+        .brand {
+            text-align: center;
+            color: #e1306c;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 23px;
+            margin-bottom: 25px;
+        }
+
+        .form-field {
+            margin-bottom: 17px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e8ccd7;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            border-color: #e1306c;
+            box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.10);
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            color: #888;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            display: block;
+            color: #d62839;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .message {
+            padding: 11px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #c62828;
+            font-size: 13px;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+            background: #e1306c;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .register-btn:hover {
+            background: #bd2056;
+            transform: translateY(-1px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 23px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #e1306c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #888;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            color: #e1306c;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 25px 20px;
+            }
+
+            .brand {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h2>Customer Registration</h2>
+    <div class="register-container">
 
-    {% if messages %}
-        {% for message in messages %}
-            <p style="color: red;">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+        <div class="brand">Glow Beauty</div>
+        <div class="subtitle">Beauty essentials, all in one place</div>
 
-    <form method="POST">
-        {% csrf_token %}
+        <h2>Create Your Account 💗</h2>
 
-        {% for field in form %}
-            <p>
-                {{ field.label_tag }}<br>
-                {{ field }}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
 
-                {% for error in field.errors %}
-                    <br>
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
+        <form method="POST">
+            {% csrf_token %}
 
-                {% if field.help_text %}
-                    <br>
-                    <small>{{ field.help_text }}</small>
-                {% endif %}
-            </p>
-        {% endfor %}
+            {% for field in form %}
+                <div class="form-field">
 
-        {% for error in form.non_field_errors %}
-            <p style="color: red;">{{ error }}</p>
-        {% endfor %}
+                    {{ field.label_tag }}
+                    {{ field }}
 
-        <button type="submit">Register</button>
-    </form>
+                    {% for error in field.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
 
-    <p>
-        Already registered?
-        <a href="{% url 'login' %}">Login</a>
-    </p>
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+            {% for error in form.non_field_errors %}
+                <div class="message">{{ error }}</div>
+            {% endfor %}
+
+            <button type="submit" class="register-btn">
+                Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already registered?
+            <a href="{% url 'login' %}">Login here</a>
+        </div>
+
+        <a href="/" class="back-home">← Back to Home</a>
+
+    </div>
 
 </body>
 </html>

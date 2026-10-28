@@ -1,475 +1,566 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow Beauty</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glow Beauty</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #fff8fa;
-        }
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff9fb;color:#333}
+a{text-decoration:none}
+header{background:white;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:1px solid #f3e2e9}
+.logo{color:#d6336c;font-size:29px;font-weight:bold;margin:0}
+.tagline{color:#888;font-size:12px;margin-top:5px}
+.search-form{display:flex;gap:8px;flex:1;max-width:440px}
+.search{width:100%;padding:12px 16px;border:1px solid #ead5df;border-radius:25px;outline:none;font-size:14px}
+button{font-family:inherit;cursor:pointer}
+.search-btn{padding:12px 20px;background:#d6336c;color:white;border:0;border-radius:25px;font-weight:bold}
 
-        header {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
+.auth {
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 5%;
+    background:linear-gradient(90deg,#fff5f8,#f3e6ed);
+    border-top:1px solid #f5dce5;
+    border-bottom:1px solid #f5dce5;
+    position:relative;
+    z-index:10;
+    pointer-events:auto;
+}
+.auth-box {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:10px;
+    width:100%;
+}
+.welcome{color:#444;font-size:14px;margin-right:auto}
+.auth form{display:inline-flex;margin:0}
+.auth-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 18px;
+    border:0;
+    border-radius:25px;
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .25s ease;
+}
+.login-btn,.wishlist-btn,.register-btn{background:#d6336c}
+.orders-btn{background:linear-gradient(135deg,#8e44ad,#a855c7)}
+.logout-btn{background:#555}
+.auth-btn:hover{transform:translateY(-2px);filter:brightness(.96)}
 
-        h1 {
-            color: #e91e63;
-            margin: 0;
-        }
+nav a{color:#555;font-size:14px;font-weight:bold;padding:8px 12px;border-radius:20px}
+.category-nav {
+    background:white;
+    padding:15px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:38px;
+    flex-wrap:wrap;
+    border-bottom:1px solid #f3e2e9;
+    position:relative;
+    z-index:10;
+}
+.category-nav a {
+    display:inline-block;
+    color:#555;
+    font-size:14px;
+    font-weight:bold;
+    padding:8px 12px;
+    border-radius:20px;
+    position:relative;
+    z-index:11;
+}
+.category-nav a:hover,.category-nav a.active{color:#d6336c;background:#fff0f5}
 
-        .search {
-            margin-top: 15px;
-            padding: 10px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            box-sizing: border-box;
-        }
+.hero-banner {
+    width:96%;
+    max-width:1400px;
+    height:280px;
+    margin:20px auto 30px;
+    overflow:hidden;
+    border-radius:14px;
+    background:#fce7ef;
+    position:relative;
+}
+.hero-banner img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+}
+.hero-overlay {
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    justify-content:center;
+    padding:15px 5%;
+    text-align:right;
+    background:linear-gradient(90deg,transparent 45%,rgba(80,0,35,.12));
+    pointer-events:none;
+}
+.hero-overlay h2 {
+    color:#9b051e;
+    font-size:clamp(20px,2.5vw,30px);
+    max-width:48%;
+    margin:0 0 8px;
+    position:relative;
+    top:-35px;
+}
+.hero-banner .shop-btn {
+    position:absolute;
+    right:5%;
+    top:60%;
+    transform:translateY(-50%);
+    z-index:2;
+    background:#fff0a8;
+    color:#a50045;
+    padding:12px 24px;
+    border-radius:25px;
+    font-weight:bold;
+}
 
-        nav {
-            background: #e91e63;
-            padding: 12px;
-            text-align: center;
-        }
+.section-title{text-align:center;margin:35px 0 8px;font-size:27px}
+.section-subtitle{text-align:center;color:#888;font-size:14px;margin:0 0 25px}
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 12px;
-        }
+.products {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
+    gap:24px;
+    padding:0 5% 35px;
+    align-items:start;
+}
+.product {
+    background:white;
+    border:1px solid #f1e4e9;
+    border-radius:15px;
+    padding:16px;
+    min-width:0;
+    overflow:hidden;
+    box-shadow:0 4px 15px #00000008;
+    transition:.2s;
+}
+.product:hover{transform:translateY(-4px);box-shadow:0 8px 22px #d6336c18}
+.product-image{width:100%;height:220px;object-fit:contain;background:#fff8fb;border-radius:10px;margin-bottom:12px}
+.image-placeholder{height:220px;display:flex;align-items:center;justify-content:center;background:#fff4f8;color:#c17b98;border-radius:10px;margin-bottom:12px;font-size:14px}
+.product h3{font-size:17px;margin:8px 0;overflow-wrap:anywhere}
+.brand{color:#888;font-size:13px;margin:5px 0 12px}
+.original-price{color:#888;font-size:13px;margin:7px 0}
+.discount{display:inline-block;background:#fff0f5;color:#c02660;padding:5px 9px;border-radius:6px;font-size:12px;font-weight:bold}
+.price{color:#d6336c;font-size:19px;font-weight:bold;margin:12px 0}
+.stock{color:#27834b;font-size:12px;margin:10px 0}
+.out-stock{color:#c62828;font-size:12px;margin:10px 0}
+.product form{margin:12px 0 8px}
+.product-button{display:block;width:100%;text-align:center;padding:11px 10px;margin-top:9px;border-radius:22px;color:white;font-size:13px;font-weight:bold;border:0;cursor:pointer}
+.cart-btn{background:#d6336c}
+.wishlist-product-btn{background:#fff0f5;color:#c02660;border:1px solid #f2c6d7}
+.review-btn{background:#8e44ad}
+.reviews{margin-top:16px;padding:13px;background:#fff9fb;border:1px solid #f5e3eb;border-radius:10px;text-align:left}
+.reviews h4{font-size:14px;margin:0 0 12px;color:#555}
+.review-item,.related-item{padding:9px 0;border-bottom:1px solid #f0e0e7;font-size:13px}
+.review-item:last-child,.related-item:last-child{border-bottom:0}
+.review-item p,.related-item p{margin:5px 0}
+.review-rating{color:#d6336c;font-weight:bold}
+.review-comment{overflow-wrap:anywhere;line-height:1.5}
+.empty-message{grid-column:1/-1;text-align:center;padding:40px 15px;color:#888;background:white;border-radius:12px}
 
-        
-        .auth {
-            background: #fff0f5;
-            padding: 18px 25px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #f5c6d6;
-        }
+.pagination{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:10px 0 40px}
+.pagination a{background:#d6336c;color:white;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:bold}
+.pagination span{font-size:14px;color:#666}
+footer{text-align:center;padding:22px 15px;background:white;border-top:1px solid #f3e2e9;color:#888;font-size:13px}
 
-        .auth-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: white;
-            padding: 12px 16px;
-            border-radius: 14px;
-            box-shadow: 0 3px 10px #00000010;
-        }
+/* Floating chatbot button */
+.chatbot-toggle {
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:100000;
+    background:#d6336c;
+    color:white;
+    border:none;
+    border-radius:50px;
+    padding:15px 22px;
+    font-size:15px;
+    font-weight:bold;
+    box-shadow:0 4px 15px #0002;
+    cursor:pointer;
+}
+.chatbot-toggle:hover{background:#b92759}
 
-        .auth form {
-            display: inline;
-            margin: 0;
-        }
+.chatbot-box {
+    display:none;
+    position:fixed;
+    right:22px;
+    bottom:85px;
+    width:360px;
+    max-width:calc(100vw - 24px);
+    height:470px;
+    max-height:70vh;
+    background:white;
+    border:1px solid #f1c8d8;
+    border-radius:16px;
+    box-shadow:0 8px 30px #0002;
+    z-index:100000;
+    overflow:hidden;
+    flex-direction:column;
+}
+.chatbot-header {
+    background:#d6336c;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:bold;
+}
+.chatbot-close {
+    background:transparent;
+    color:white;
+    border:none;
+    font-size:25px;
+    line-height:1;
+    padding:0 4px;
+}
+.chatbot-messages {
+    flex:1;
+    padding:14px;
+    overflow-y:auto;
+    background:#fff9fb;
+    font-size:14px;
+}
+.chat-message {
+    padding:10px 12px;
+    margin-bottom:10px;
+    border-radius:12px;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    line-height:1.5;
+}
+.bot-message{background:#fce7ef;color:#333;margin-right:18px}
+.user-message{background:#d6336c;color:white;margin-left:18px}
+.chatbot-form {
+    display:flex;
+    gap:7px;
+    padding:10px;
+    border-top:1px solid #f3e2e9;
+    background:white;
+}
+.chatbot-input {
+    min-width:0;
+    flex:1;
+    padding:11px;
+    border:1px solid #ead5df;
+    border-radius:22px;
+    outline:none;
+}
+.chatbot-input:focus{border-color:#d6336c}
+.chatbot-send {
+    border:none;
+    background:#d6336c;
+    color:white;
+    border-radius:22px;
+    padding:0 15px;
+    font-weight:bold;
+}
+.chatbot-send:disabled{opacity:.6;cursor:wait}
 
-        .auth-btn {
-            display: inline-block;
-            padding: 10px 16px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            font-family: Arial, sans-serif;
-        }
-
-        .wishlist-btn {
-            background: #e91e63;
-        }
-
-        .orders-btn {
-            background: #8e44ad;
-        }
-
-        .logout-btn {
-            background: #555;
-        }
-
-        .auth-btn:hover {
-            opacity: 0.85;
-        }
-
-        .banner {
-            background: #ffe0eb;
-            padding: 35px 15px;
-            text-align: center;
-            color: #ad1457;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 25px;
-        }
-
-        .product {
-            background: white;
-            padding: 18px;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px #00000010;
-            min-width: 0;
-        }
-
-        .product h3 {
-            color: #333;
-        }
-
-        .price {
-            color: #e91e63;
-            font-weight: bold;
-        }
-
-        button {
-            background: #e91e63;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .product-button {
-            display: inline-block;
-            margin-top: 10px;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .product-button:hover {
-            opacity: 0.85;
-        }
-
-        /* Customer Reviews */
-        .reviews {
-            margin-top: 18px;
-            padding: 12px;
-            background: #fff8fa;
-            border-radius: 8px;
-            text-align: left;
-        }
-
-        .review-item {
-            border-bottom: 1px solid #f3c5d5;
-            padding: 8px 0;
-        }
-
-        .review-item:last-child {
-            border-bottom: none;
-        }
-
-        .review-rating {
-            color: #e91e63;
-            font-weight: bold;
-        }
-
-        .review-comment {
-            overflow-wrap: anywhere;
-        }
-
-        /* Related Products */
-        .related-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #f3c5d5;
-        }
-
-        .related-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 30px 0;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            background-color: #ad1457;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
-
-        .pagination a:hover {
-            background-color: #e91e63;
-        }
-
-        @media (max-width: 600px) {
-            .auth {
-                justify-content: center;
-                padding: 15px 10px;
-            }
-
-            .auth-box {
-                justify-content: center;
-            }
-
-            .products {
-                padding: 15px;
-            }
-        }
-    </style>
+@media(max-width:768px){
+    header{flex-direction:column;padding:20px 15px}
+    .search-form{width:100%;max-width:none}
+    .hero-banner{height:220px}
+    .hero-overlay{padding:12px 4%}
+    .hero-overlay h2{font-size:20px;max-width:55%;top:-15px}
+    .hero-banner .shop-btn{right:12px;top:70%;padding:9px 14px;font-size:12px}
+    .products{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:13px;padding:0 12px 25px}
+    .product{padding:11px}
+    .product-image,.image-placeholder{height:165px}
+    .product h3{font-size:15px}
+    .section-title{font-size:23px}
+}
+@media(max-width:600px){
+    .auth{padding:12px 4%}
+    .auth-box{justify-content:center;gap:8px}
+    .welcome{width:100%;text-align:center;margin:0 0 4px}
+    .auth-btn{padding:9px 13px;font-size:13px}
+}
+@media(max-width:480px){
+    .chatbot-box{right:10px;bottom:78px;width:calc(100vw - 20px);height:65vh;max-height:470px}
+    .chatbot-toggle{right:14px;bottom:14px}
+}
+@media(max-width:380px){
+    .products{grid-template-columns:1fr}
+    .product-image,.image-placeholder{height:220px}
+}
+</style>
 </head>
 
 <body>
 
-    <header>
-        <h1>Glow Beauty</h1>
+<header>
+  <div>
+    <h1 class="logo">Glow Beauty</h1>
+    <div class="tagline">Beauty essentials, all in one place</div>
+  </div>
 
-        <form method="GET">
-            <input class="search"
-                   type="text"
-                   name="search"
-                   placeholder="Search products..."
-                   value="{{ search }}">
+  <form method="GET" class="search-form">
+    <input class="search" type="text" name="search"
+           placeholder="Search your favourite products..."
+           value="{{ search }}">
+    {% if selected_category %}
+      <input type="hidden" name="category" value="{{ selected_category }}">
+    {% endif %}
+    <button type="submit" class="search-btn">Search</button>
+  </form>
+</header>
 
-            <button type="submit">Search</button>
-        </form>
-    </header>
+<div class="auth">
+{% if user.is_authenticated %}
+  <div class="auth-box">
+    <span class="welcome">Welcome, <strong>{{ user.username }}</strong>!</span>
+    <a href="{% url 'wishlist' %}" class="auth-btn wishlist-btn">❤️ My Wishlist</a>
+    <a href="{% url 'order_history' %}" class="auth-btn orders-btn">📦 My Orders</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="auth-btn logout-btn">Logout</button>
+    </form>
+  </div>
+{% else %}
+  <div class="auth-box">
+    <a href="{% url 'login' %}" class="auth-btn login-btn">Login</a>
+    <a href="{% url 'register' %}" class="auth-btn register-btn">Create Account</a>
+  </div>
+{% endif %}
+</div>
 
-    
-    <div class="auth">
+<nav class="category-nav">
+    <a href="{% url 'home' %}"
+       class="{% if not selected_category %}active{% endif %}">
+        All Products
+    </a>
 
-        {% if user.is_authenticated %}
+    {% for cat in categories %}
+        <a href="{% url 'home' %}?category={{ cat.id }}"
+           class="{% if selected_category == cat.id|stringformat:'s' %}active{% endif %}">
+            {{ cat.name }}
+        </a>
+    {% endfor %}
+</nav>
 
-            <div class="auth-box">
+<section class="hero-banner">
+  <img src="/media/image.png" alt="Glow Beauty Cosmetics Banner">
+  <div class="hero-overlay">
+    <h2>Look Good, Feel Beautiful</h2>
+  </div>
+  <a href="#products" class="shop-btn">Shop Now &rarr;</a>
+</section>
 
-                <span>
-                    Welcome, <strong>{{ user.username }}</strong>!
-                </span>
+<h2 id="products" class="section-title">
+  {% if selected_category %}
+    {% for cat in categories %}
+      {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}
+        {{ cat.name }} Products
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    Our Products
+  {% endif %}
+</h2>
+<p class="section-subtitle">Find your everyday beauty favourites</p>
 
-                <a href="{% url 'wishlist' %}"
-                   class="auth-btn wishlist-btn">
-                    ❤️ My Wishlist
-                </a>
+<section class="products">
+{% for product in products %}
+  <div class="product">
+    {% if product.image %}
+      <img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      <div class="image-placeholder">Product image unavailable</div>
+    {% endif %}
 
-                <a href="{% url 'order_history' %}"
-                   class="auth-btn orders-btn">
-                    📦 My Orders
-                </a>
+    <h3>{{ product.name }}</h3>
+    <p class="brand">{{ product.brand }}</p>
+    <p class="original-price">Original price: ₹{{ product.price }}</p>
+    <span class="discount">{{ product.disc_perc }}% OFF</span>
+    <p class="price">₹{{ product.get_disc_perc }}</p>
 
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="auth-btn logout-btn">
-                        Logout
-                    </button>
-                </form>
+    {% if product.stoct %}
+      <p class="stock">✓ In stock: {{ product.stoct }}</p>
+    {% else %}
+      <p class="out-stock">Out of stock</p>
+    {% endif %}
 
-            </div>
+    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+      {% csrf_token %}
+      <button type="submit" class="product-button cart-btn">Add to Bag</button>
+    </form>
 
-        {% else %}
+    <a class="product-button wishlist-product-btn"
+       href="{% url 'add_to_wishlist' product.id %}">❤️ Add to Wishlist</a>
+    <a class="product-button review-btn"
+       href="{% url 'add_review' product.id %}">⭐ Write a Review</a>
 
-            <div class="auth-box">
-
-                <a href="{% url 'login' %}"
-                   class="auth-btn wishlist-btn">
-                    Login
-                </a>
-
-                <a href="{% url 'register' %}"
-                   class="auth-btn orders-btn">
-                    Register
-                </a>
-
-            </div>
-
-        {% endif %}
-
+    <div class="reviews">
+      <h4>⭐ Customer Reviews</h4>
+      {% for review in product.reviews.all %}
+        <div class="review-item">
+          <p><strong>{{ review.user.username }}</strong></p>
+          <p class="review-rating">⭐ {{ review.rating }}/5</p>
+          <p class="review-comment">{{ review.comment }}</p>
+        </div>
+      {% empty %}
+        <p>No reviews yet.</p>
+      {% endfor %}
     </div>
 
-    
-    <nav>
-        <a href="#">Skincare</a>
-        <a href="#">Makeup</a>
-        <a href="#">Haircare</a>
-    </nav>
-
-    
-    <section class="banner">
-        <h2>Your beauty, your style</h2>
-        <p>Discover your favourite beauty products</p>
-    </section>
-
-    <h2 style="text-align: center;">Our Products</h2>
-
-    
-    <section class="products">
-
-        {% for product in products %}
-
-            <div class="product">
-
-                {% if product.image %}
-                    <img src="{{ product.image.url }}"
-                         alt="{{ product.name }}"
-                         width="150">
-                {% endif %}
-
-                <h3>{{ product.name }}</h3>
-
-                <p>{{ product.brand }}</p>
-
-                <p>Original price: ₹{{ product.price }}</p>
-
-                <p>Discount: {{ product.disc_perc }}%</p>
-
-                <p class="price">
-                    Final price: ₹{{ product.get_disc_perc }}
-                </p>
-
-                {% if product.stock %}
-                    <p>In stock: {{ product.stock }}</p>
-                {% else %}
-                    <p>Out of stock</p>
-                {% endif %}
-
-                
-                
-                <form method="POST"
-                        action="{% url 'add_to_cart' product.id %}"
-                        style="margin-top: 10px;">
-
-                    {% csrf_token %}
-
-                    <button type="submit" class="product-button"
-                            style="background:#e91e63;">
-                        Add to Bag
-                    </button>
-
-                </form>
-
-                
-                <a class="product-button"
-                   href="{% url 'add_to_wishlist' product.id %}"
-                   style="background:#e91e63;">
-                    ❤️ Add to Wishlist
-                </a>
-
-               
-                <a class="product-button"
-                   href="{% url 'add_review' product.id %}"
-                   style="background:#ad1457;">
-                    ⭐ Write a Review
-                </a>
-
-                
-                <div class="reviews">
-
-                    <h4>⭐ Customer Reviews</h4>
-
-                    {% for review in product.reviews.all %}
-
-                        <div class="review-item">
-
-                            <p>
-                                <strong>
-                                    {{ review.user.username }}
-                                </strong>
-                            </p>
-
-                            <p class="review-rating">
-                                ⭐ {{ review.rating }}/5
-                            </p>
-
-                            <p class="review-comment">
-                                {{ review.comment }}
-                            </p>
-
-                        </div>
-
-                    {% empty %}
-
-                        <p>No reviews yet.</p>
-
-                    {% endfor %}
-
-                </div>
-
-                
-                <div class="reviews">
-
-                    <h4> Related Products</h4>
-
-                    {% for related in products %}
-
-                        {% if related.category == product.category and related.id != product.id %}
-
-                            <div class="related-item">
-
-                                <strong>{{ related.name }}</strong>
-
-                                <p>Price: ₹{{ related.price }}</p>
-
-                            </div>
-
-                        {% endif %}
-
-                    {% empty %}
-
-                        <p>No related products available.</p>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-        {% empty %}
-
-            <p>No products available yet.</p>
-
-        {% endfor %}
-
-    </section>
-
-
-    <div class="pagination">
-
-        {% if page_obj.has_previous %}
-
-            <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}&category={{ selected_category }}">
-                Previous
-            </a>
-
+    <div class="reviews">
+      <h4>Related Products</h4>
+      {% for related in products %}
+        {% if related.category == product.category and related.id != product.id %}
+          <div class="related-item">
+            <strong>{{ related.name }}</strong>
+            <p>Price: ₹{{ related.price }}</p>
+          </div>
         {% endif %}
-
-        <span>
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-        </span>
-
-        {% if page_obj.has_next %}
-
-            <a href="?page={{ page_obj.next_page_number }}&search={{ search }}&category={{ selected_category }}">
-                Next
-            </a>
-
-        {% endif %}
-
+      {% endfor %}
     </div>
+  </div>
+{% empty %}
+  <div class="empty-message">
+    <h3>No products found</h3>
+    <p>Try another category or search term.</p>
+    <a href="{% url 'home' %}">View all products</a>
+  </div>
+{% endfor %}
+</section>
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}&category={{ selected_category }}">Previous</a>
+  {% endif %}
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}&category={{ selected_category }}">Next</a>
+  {% endif %}
+</div>
+
+<footer>© Glow Beauty — Your everyday beauty destination</footer>
+
+<!-- Floating chatbot -->
+<button type="button" class="chatbot-toggle" id="chatbotToggle">
+    💬 Chat with us
+</button>
+
+<div class="chatbot-box" id="chatbotBox">
+    <div class="chatbot-header">
+        <span>Glow Beauty Assistant 💗</span>
+        <button type="button" class="chatbot-close" id="chatbotClose"
+                aria-label="Close chatbot">&times;</button>
+    </div>
+
+    <div class="chatbot-messages" id="chatbotMessages" aria-live="polite">
+        <div class="chat-message bot-message">Welcome to Glow Beauty! 💗
+Ask me about skincare, hair care, prices and discounts.</div>
+    </div>
+
+    <form class="chatbot-form" id="chatbotForm">
+        {% csrf_token %}
+        <input type="text"
+               class="chatbot-input"
+               id="chatbotInput"
+               name="message"
+               placeholder="Ask me anything..."
+               maxlength="1000"
+               required>
+        <button type="submit" class="chatbot-send">Send</button>
+    </form>
+</div>
+
+<script>
+(function () {
+    const toggle = document.getElementById("chatbotToggle");
+    const box = document.getElementById("chatbotBox");
+    const close = document.getElementById("chatbotClose");
+    const form = document.getElementById("chatbotForm");
+    const input = document.getElementById("chatbotInput");
+    const messages = document.getElementById("chatbotMessages");
+    const sendButton = form.querySelector("button[type='submit']");
+
+    toggle.addEventListener("click", function () {
+        box.style.display = "flex";
+        toggle.style.display = "none";
+        input.focus();
+    });
+
+    close.addEventListener("click", function () {
+        box.style.display = "none";
+        toggle.style.display = "block";
+    });
+
+    function addMessage(text, type) {
+        const message = document.createElement("div");
+        message.className = "chat-message " + type;
+        message.textContent = text;
+        messages.appendChild(message);
+        messages.scrollTop = messages.scrollHeight;
+        return message;
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const message = input.value.trim();
+        if (!message || sendButton.disabled) return;
+
+        addMessage(message, "user-message");
+        input.value = "";
+        input.disabled = true;
+        sendButton.disabled = true;
+
+        const loading = addMessage("Typing...", "bot-message");
+
+        try {
+            const csrfInput = form.querySelector(
+                "[name=csrfmiddlewaretoken]"
+            );
+
+            const response = await fetch("{% url 'chat_message' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                    "X-CSRFToken": csrfInput.value
+                },
+                body: new URLSearchParams({message: message})
+            });
+
+            const data = await response.json();
+            loading.textContent = data.reply || "Please try again.";
+
+            if (!response.ok) {
+                loading.textContent += " (Request failed)";
+            }
+        } catch (error) {
+            loading.textContent =
+                "Sorry, something went wrong. Please try again.";
+        } finally {
+            input.disabled = false;
+            sendButton.disabled = false;
+            input.focus();
+            messages.scrollTop = messages.scrollHeight;
+        }
+    });
+})();
+</script>
 
 </body>
 </html>

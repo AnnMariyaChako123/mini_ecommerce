@@ -1,57 +1,334 @@
- <!DOCTYPE html>
+ 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders</title>
+    <title>My Orders | Glow Beauty</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fff7fa, #f8edf4);
+            color: #333;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #df2e70, #a044b5);
+            color: white;
+            padding: 28px 6%;
+            box-shadow: 0 4px 15px rgba(100, 30, 70, 0.12);
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .page-header p {
+            margin: 0;
+            opacity: 0.92;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            color: #a52660;
+            font-size: 23px;
+            margin-bottom: 22px;
+        }
+
+        .order-card {
+            background: white;
+            border: 1px solid #f0dce6;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 18px rgba(120, 40, 80, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(120, 40, 80, 0.10);
+        }
+
+        .order-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f4e5ec;
+        }
+
+        .order-top h2 {
+            margin: 0;
+            color: #a52660;
+            font-size: 20px;
+        }
+
+        .order-date {
+            color: #777;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+
+        .detail-box {
+            background: #fff7fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            display: block;
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .amount {
+            color: #d62e70;
+            font-size: 19px;
+        }
+
+        .status {
+            display: inline-block;
+            background: #fff0d4;
+            color: #986000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .payment-status {
+            display: inline-block;
+            background: #f0e6fa;
+            color: #783ba0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 17px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-details {
+            background: #df2e70;
+            color: white;
+        }
+
+        .btn-details:hover {
+            background: #bd205b;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #fff0f0;
+            color: #c62828;
+            border: 1px solid #f4cccc;
+        }
+
+        .btn-cancel:hover {
+            background: #ffe0e0;
+        }
+
+        .cancel-form {
+            margin: 0;
+        }
+
+        .empty-state {
+            background: white;
+            text-align: center;
+            padding: 55px 20px;
+            border: 1px solid #f0dce6;
+            border-radius: 18px;
+            box-shadow: 0 5px 18px rgba(120, 40, 80, 0.05);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h2 {
+            color: #a52660;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #777;
+            line-height: 1.6;
+            margin-bottom: 23px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #a52660;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 650px) {
+            .page-header {
+                padding: 23px 5%;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 0 14px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .order-card {
+                padding: 18px;
+            }
+
+            .order-top h2 {
+                font-size: 18px;
+            }
+
+            .btn {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>My Orders</h1>
+    <header class="page-header">
+        <h1>My Orders</h1>
+        <p>Thank you for shopping with Glow Beauty. View your order details below.</p>
+    </header>
 
-    {% for order in orders %}
-        <div>
-            <h2>Order {{ order.id }}</h2>
+    <main class="container">
+        <h2 class="section-title">Your Order History</h2>
 
-            <p>
-                <strong>Order Date:</strong>
-                {{ order.created_at|date:"d-m-Y H:i" }}
-            </p>
+        {% for order in orders %}
+            <div class="order-card">
 
-            <p>
-                <strong>Status:</strong>
-                {{ order.status }}
-            </p>
+                <div class="order-top">
+                    <div>
+                        <h2>Order #{{ order.id }}</h2>
+                        <div class="order-date">
+                            Ordered on {{ order.created_at|date:"d M Y, H:i" }}
+                        </div>
+                    </div>
+                </div>
 
-            <p>
-                <strong>Payment Status:</strong>
-                {{ order.payment_status }}
-            </p>
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <span class="detail-label">Order Status</span>
+                        <span class="status">{{ order.status }}</span>
+                    </div>
 
-            <p>
-                <strong>Total Amount:</strong>
-                ₹{{ order.total_amount|floatformat:2 }}
-            </p>
+                    <div class="detail-box">
+                        <span class="detail-label">Payment Status</span>
+                        <span class="payment-status">{{ order.payment_status }}</span>
+                    </div>
 
-            <a href="{% url 'order_detail' order.id %}">
-                View Order Details
-            </a>
+                    <div class="detail-box">
+                        <span class="detail-label">Total Amount</span>
+                        <span class="detail-value amount">
+                            ₹{{ order.total_amount|floatformat:2 }}
+                        </span>
+                    </div>
+                </div>
 
-            {% if order.status == 'Pending' and order.payment_status != 'Paid' %}
-                <form method="POST" action="{% url 'cancel_order' order.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Cancel Order</button>
-                </form>
-            {% endif %}
-        </div>
+                <div class="order-actions">
+                    <a href="{% url 'order_detail' order.id %}" class="btn btn-details">
+                        View Order Details →
+                    </a>
 
-        <hr>
-    {% empty %}
-        <p>No orders found.</p>
-    {% endfor %}
+                    {% if order.status == 'Pending' and order.payment_status != 'Paid' %}
+                        <form method="POST"
+                              action="{% url 'cancel_order' order.id %}"
+                              class="cancel-form"
+                              onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-cancel">
+                                Cancel Order
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
 
-    <br>
-    <a href="{% url 'cart' %}">Back to Cart</a>
+            </div>
+
+        {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon"></div>
+                <h2>No Orders Yet</h2>
+                <p>
+                    You haven't placed any orders yet.<br>
+                    Explore our beauty collection and find your favourites!
+                </p>
+                <a href="{% url 'home' %}" class="btn btn-details">
+                    Continue Shopping →
+                </a>
+            </div>
+        {% endfor %}
+
+        <a href="{% url 'cart' %}" class="back-link">← Back to Cart</a>
+    </main>
 
 </body>
 </html>

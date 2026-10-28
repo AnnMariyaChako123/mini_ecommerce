@@ -1,0 +1,86 @@
+[
+{
+  "model": "catalog.product",
+  "pk": 1,
+  "fields": {
+    "name": "Nivea Face Wash",
+    "sku": "NV101",
+    "category": 1,
+    "brand": 1,
+    "price": "1000.00",
+    "stoct": 25,
+    "image": "products/products_y6i19J3.webp",
+    "disc_perc": 20
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 2,
+  "fields": {
+    "name": "Sunscreen",
+    "sku": "SS006",
+    "category": 1,
+    "brand": 1,
+    "price": "250.00",
+    "stoct": 1,
+    "image": "products/products.webp",
+    "disc_perc": 0
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 3,
+  "fields": {
+    "name": "Nivea Soft Cream",
+    "sku": "SC012",
+    "category": 1,
+    "brand": 1,
+    "price": "250.00",
+    "stoct": 18,
+    "image": "products/gelllll.jpg",
+    "disc_perc": 5
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 4,
+  "fields": {
+    "name": "Glow skincare",
+    "sku": "GS009",
+    "category": 1,
+    "brand": 1,
+    "price": "650.00",
+    "stoct": 0,
+    "image": "products/glowwww.webp",
+    "disc_perc": 10
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 5,
+  "fields": {
+    "name": "Clean Cream",
+    "sku": "CS013",
+    "category": 1,
+    "brand": 1,
+    "price": "329.00",
+    "stoct": 5,
+    "image": "products/clean.jfif",
+    "disc_perc": 0
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 1,
+  "fields": {
+    "name": "Skincare"
+  }
+},
+{
+  "model": "catalog.brand",
+  "pk": 1,
+  "fields": {
+    "name": "Nivea"
+  }
+}
+]

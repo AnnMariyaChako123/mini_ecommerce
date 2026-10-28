@@ -206,12 +206,20 @@ from .models import EmailOTP
 User = get_user_model()
 
 
+
 def request_otp(request):
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
 
+        if not email:
+            messages.error(request, 'Please enter your email address.')
+            return redirect('login')
+
         if not User.objects.filter(email__iexact=email).exists():
-            messages.error(request, 'No account found with this email. Please register first.')
+            messages.error(
+                request,
+                'No account found with this email. Please register first.'
+            )
             return redirect('login')
 
         
@@ -221,37 +229,60 @@ def request_otp(request):
         ).exists()
 
         if recent_otp:
-            messages.error(request, 'Please wait 60 seconds before requesting another OTP.')
+            messages.error(
+                request,
+                'Please wait 60 seconds before requesting another OTP.'
+            )
             return redirect('login')
 
+        
         otp = f'{secrets.randbelow(1_000_000):06d}'
 
-        EmailOTP.objects.filter(email__iexact=email, is_used=False).update(is_used=True)
+        
+        EmailOTP.objects.filter(
+            email__iexact=email,
+            is_used=False
+        ).update(is_used=True)
 
+        
         EmailOTP.objects.create(
             email=email,
             otp_hash=make_password(otp),
             expires_at=timezone.now() + timedelta(minutes=5)
         )
 
+        
         try:
             send_mail(
                 'Your Mini Ecommerce Login OTP',
-                f'Your OTP is {otp}. It expires in 5 minutes. Do not share it with anyone.',
+                f'Your OTP is {otp}. It expires in 5 minutes. '
+                'Do not share it with anyone.',
                 settings.DEFAULT_FROM_EMAIL,
                 [email],
                 fail_silently=False,
             )
-        except Exception:
-            EmailOTP.objects.filter(email__iexact=email, is_used=False).update(is_used=True)
-            messages.error(request, 'Unable to send OTP. Please try again later.')
+
+        except Exception as e:
+            print("OTP EMAIL ERROR:", repr(e))
+
+            EmailOTP.objects.filter(
+                email__iexact=email,
+                is_used=False
+            ).update(is_used=True)
+
+            messages.error(
+                request,
+                'Unable to send OTP. Please check email settings.'
+            )
             return redirect('login')
 
+        # Store email in session after successful sending
         request.session['otp_email'] = email
+
+        messages.success(request, 'OTP sent successfully. Please check your email.')
         return redirect('verify_otp')
 
     return render(request, 'catalog/login.html')
-
 
 
 def verify_otp(request):
