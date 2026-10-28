@@ -1,23 +1,29 @@
 
-from decimal import Decimal, InvalidOperation
-import re
+import os
+import logging
+from decimal import Decimal
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from groq import Groq
+
 from catalog.models import product
+from .models import ChatMessage
 
 
-def chat_page(request):
-    return render(request, "chatbot/chat.html")
+logger = logging.getLogger(__name__)
 
 
 def get_products():
+    """Fetch products from the existing product database."""
+
     result = []
 
     for item in product.objects.all()[:100]:
-        original_price = Decimal(str(item.price))
+        original_price = Decimal(str(item.price or 0))
         discount_percent = Decimal(str(item.disc_perc or 0))
 
         discount_price = (
@@ -27,7 +33,7 @@ def get_products():
         )
 
         result.append({
-            "name": item.name,
+            "name": str(item.name),
             "price": original_price,
             "original_price": original_price,
             "discount_percent": discount_percent,
@@ -38,6 +44,8 @@ def get_products():
 
 
 def format_products(products):
+    """Format product information for the AI."""
+
     lines = []
 
     for item in products:
@@ -48,315 +56,181 @@ def format_products(products):
         if discount > 0:
             lines.append(
                 f"- {item['name']}: Original price ₹{original:,.2f}, "
-                f"{discount}% off, Offer price ₹{final_price:,.2f}"
+                f"{discount}% discount, Offer price ₹{final_price:,.2f}"
             )
         else:
             lines.append(
                 f"- {item['name']}: ₹{original:,.2f}"
             )
 
-    return "\n".join(lines)
+    return "\n".join(lines) if lines else "No products are currently listed."
 
 
-def get_reply(message):
-    text = message.lower().strip()
-    products = get_products()
+def get_chat_history(request):
+    """Retrieve chat history for the current user or guest session."""
 
-    
-    if text in [
-        "hi", "hello", "hey", "hai",
-        "good morning", "good evening"
-    ]:
-        return (
-            "Hello! Welcome to Glow Beauty! 💗\n\n"
-            "I can help you with skincare products, hair care products, "
-            "prices, discounts, budgets, orders and payments.\n\n"
-            "What are you looking for?"
-        )
+    if not request.session.session_key:
+        request.session.create()
 
-    
-    if "face wash" in text and "sunscreen" in text:
-        return (
-            "Face Wash vs Sunscreen 🧴\n\n"
-            "• Face wash cleans your skin by removing dirt, oil "
-            "and impurities.\n\n"
-            "• Sunscreen helps protect your skin from UV rays. "
-            "Choose a broad-spectrum sunscreen and follow its label.\n\n"
-            "They have different purposes, so one does not replace the other."
-        )
+    session_key = request.session.session_key
 
-    
-    hair_words = [
-        "hair", "haircare", "shampoo", "conditioner",
-        "hair oil", "hair serum"
-    ]
+    if request.user.is_authenticated:
+        return ChatMessage.objects.filter(
+            user=request.user
+        ).order_by("-created_at")[:50]
 
-    skin_words = [
-        "skin", "skincare", "face wash", "sunscreen",
-        "moisturizer", "moisturiser", "cleanser"
-    ]
+    return ChatMessage.objects.filter(
+        session_key=session_key,
+        user__isnull=True,
+    ).order_by("-created_at")[:50]
 
-    wants_hair = any(word in text for word in hair_words)
-    wants_skin = any(word in text for word in skin_words)
 
-    # Skincare routine
-    routine_words = [
-        "routine", "daily skincare", "skin care routine",
-        "skincare routine", "daily skin care"
-    ]
+def chat_page(request):
+    """Display the chatbot page with saved messages."""
 
-    if any(word in text for word in routine_words):
-        skin_products = [
-            item for item in products
-            if any(word in item["name"].lower() for word in [
-                "face wash", "cleanser", "cream", "moisturizer",
-                "moisturiser", "sunscreen", "skin", "skincare"
-            ])
-        ]
+    history = list(get_chat_history(request))
+    history.reverse()
 
-        reply = (
-            "A simple skincare routine 💗\n\n"
-            "Morning:\n"
-            "1. Cleanse your face.\n"
-            "2. Apply moisturizer if needed.\n"
-            "3. Apply sunscreen.\n\n"
-            "Evening:\n"
-            "1. Cleanse your face.\n"
-            "2. Apply moisturizer if needed.\n\n"
-        )
-
-        if skin_products:
-            reply += (
-                "Available skincare products:\n\n"
-                + format_products(skin_products)
-            )
-        else:
-            reply += "No matching skincare products were found."
-
-        return reply
-
-    
-    hair_products = [
-        item for item in products
-        if any(word in item["name"].lower() for word in [
-            "hair", "serum", "oil", "shampoo", "conditioner"
-        ])
-    ]
-
-    skin_products = [
-        item for item in products
-        if any(word in item["name"].lower() for word in [
-            "face wash", "cleanser", "cream", "moisturizer",
-            "moisturiser", "sunscreen", "skin", "skincare"
-        ])
-    ]
-
-    
-    if wants_hair and wants_skin:
-        return (
-            "Welcome to Glow Beauty! 💗\n\n"
-            "HAIR CARE PRODUCTS 💇‍♀️\n\n"
-            + (
-                format_products(hair_products)
-                if hair_products
-                else "No hair care products found."
-            )
-            + "\n\nSKINCARE PRODUCTS 🧴\n\n"
-            + (
-                format_products(skin_products)
-                if skin_products
-                else "No skincare products found."
-            )
-        )
-
-    
-    if wants_hair:
-        if hair_products:
-            return (
-                "Our Hair Care Products 💇‍♀️\n\n"
-                + format_products(hair_products)
-            )
-
-        return "Sorry! No hair care products were found."
-
-    
-    if wants_skin:
-        if skin_products:
-            return (
-                "Our Skincare Products 🧴\n\n"
-                + format_products(skin_products)
-            )
-
-        return "Sorry! No skincare products were found."
-
-    
-    budget_words = [
-        "under", "below", "within", "less than",
-        "budget", "cheapest", "affordable"
-    ]
-
-    if any(word in text for word in budget_words):
-        numbers = re.findall(r"\d[\d,]*(?:\.\d+)?", text)
-
-        if numbers:
-            try:
-                budget = Decimal(numbers[0].replace(",", ""))
-
-                matches = [
-                    item for item in products
-                    if item["discount_price"] <= budget
-                ]
-
-                matches.sort(
-                    key=lambda item: item["discount_price"]
-                )
-
-                if matches:
-                    return (
-                        f"Products within ₹{budget:,.2f} 💰\n\n"
-                        + format_products(matches)
-                    )
-
-                return (
-                    f"Sorry, no products were found within "
-                    f"₹{budget:,.2f}."
-                )
-
-            except InvalidOperation:
-                pass
-
-        return (
-            "Please mention your budget, for example: "
-            "'Suggest products under ₹500'."
-        )
-
-    
-    if any(word in text for word in [
-        "discount", "discounts", "offer", "offers",
-        "sale", "final price", "offer price"
-    ]):
-        discounted = [
-            item for item in products
-            if item["discount_percent"] > 0
-        ]
-
-        if discounted:
-            return (
-                "Our discounted products 🎉\n\n"
-                + format_products(discounted)
-            )
-
-        return "No discounted products were found."
-
-    
-    if any(word in text for word in [
-        "all products", "show products", "list products",
-        "our products", "catalog", "available products"
-    ]):
-        if products:
-            return (
-                "Our available Glow Beauty products 💗\n\n"
-                + format_products(products)
-            )
-
-        return "No products are listed in the store right now."
-
-    
-    matched = [
-        item for item in products
-        if item["name"].lower() in text
-    ]
-
-    if matched:
-        return (
-            "Here are the matching products:\n\n"
-            + format_products(matched)
-        )
-
-    
-    if any(word in text for word in ["price", "prices", "cost"]):
-        if products:
-            return (
-                "Our product prices and offers 💗\n\n"
-                + format_products(products)
-            )
-
-        return "No product prices are available right now."
-
-    
-    if any(word in text for word in [
-        "order", "my orders", "order status", "track order"
-    ]):
-        return (
-            "You can check your orders on the My Orders page "
-            "after logging in."
-        )
-
-    
-    if any(word in text for word in [
-        "payment", "razorpay", "pay", "payment failed"
-    ]):
-        return (
-            "You can use the payment options shown during checkout. "
-            "If a payment fails, check your order and payment status."
-        )
-
-    
-    if any(word in text for word in [
-        "delivery", "shipping", "shipment"
-    ]):
-        return (
-            "Please check your order details for delivery information. "
-            "Contact the store for a confirmed delivery date."
-        )
-
-    
-    if "thank" in text:
-        return "You're welcome! Thank you for shopping with Glow Beauty. 💗"
-
-    
-    return (
-        "Welcome to Glow Beauty! 💗\n\n"
-        "I can help you with:\n"
-        "• Skincare products\n"
-        "• Hair care products\n"
-        "• Both categories together\n"
-        "• Prices and discounts\n"
-        "• Products under a budget\n"
-        "• Skincare routines\n"
-        "• Orders, payments and delivery\n\n"
-        "Try asking: 'Show me hair and skin care products'."
+    return render(
+        request,
+        "chatbot/chat.html",
+        {"history": history},
     )
+
+
+def get_ai_reply(message, request):
+    """Generate an AI response using Groq and real product data."""
+
+    api_key = os.getenv("GROQ_API_KEY")
+
+    if not api_key:
+        raise ValueError("GROQ_API_KEY is not configured.")
+
+    client = Groq(api_key=api_key)
+
+    products = get_products()
+    product_context = format_products(products[:30])
+
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are the friendly AI shopping assistant for "
+                "Glow Beauty, an e-commerce website.\n\n"
+                "Your responsibilities:\n"
+                "1. Answer general questions naturally and helpfully.\n"
+                "2. Recommend relevant skincare, haircare and beauty "
+                "products when requested.\n"
+                "3. Help users compare products and understand prices "
+                "and discounts.\n"
+                "4. Give clear, concise and friendly responses.\n"
+                "5. Use the supplied inventory for product names, "
+                "prices and offers. Never invent products or prices.\n"
+                "6. If the requested product is not listed, explain "
+                "that you could not find it in the current inventory.\n"
+                "7. Do not claim to access customer orders, payment "
+                "records or private account information unless that "
+                "information is explicitly provided.\n"
+                "8. For medical or skin concerns, provide general "
+                "information and suggest consulting a qualified "
+                "professional when appropriate.\n\n"
+                f"Current product inventory:\n{product_context}"
+            ),
+        }
+    ]
+
+    
+    if not request.session.session_key:
+        request.session.create()
+
+    if request.user.is_authenticated:
+        previous_messages = ChatMessage.objects.filter(
+            user=request.user
+        ).order_by("-created_at")[:10]
+    else:
+        previous_messages = ChatMessage.objects.filter(
+            session_key=request.session.session_key,
+            user__isnull=True,
+        ).order_by("-created_at")[:10]
+
+    for entry in reversed(list(previous_messages)):
+        messages.append({
+            "role": "user",
+            "content": entry.message,
+        })
+        messages.append({
+            "role": "assistant",
+            "content": entry.reply,
+        })
+
+    messages.append({
+        "role": "user",
+        "content": message,
+    })
+
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=messages,
+        max_tokens=600,
+        temperature=0.7,
+    )
+
+    answer = response.choices[0].message.content
+
+    if not answer:
+        return "Sorry, I could not generate a response. Please try again."
+
+    return answer.strip()
 
 
 @require_POST
 def chat_message(request):
+    """Receive a message, call Groq AI and save the conversation."""
+
     message = request.POST.get("message", "").strip()
 
     if not message:
         return JsonResponse(
             {"reply": "Please enter a message."},
-            status=400
+            status=400,
         )
 
     if len(message) > 1000:
         return JsonResponse(
             {"reply": "Please keep your message under 1000 characters."},
-            status=400
+            status=400,
         )
 
     try:
-        reply = get_reply(message)
-        return JsonResponse({"reply": reply})
+        if not request.session.session_key:
+            request.session.create()
 
-    except Exception as error:
-        print("Chatbot Error:", repr(error))
+        reply = get_ai_reply(message, request)
+
+        ChatMessage.objects.create(
+            user=(
+                request.user
+                if request.user.is_authenticated
+                else None
+            ),
+            session_key=request.session.session_key or "",
+            message=message,
+            reply=reply,
+        )
+
+        return JsonResponse({
+            "reply": reply,
+        })
+
+    except Exception:
+        logger.exception("Groq chatbot request failed")
+
         return JsonResponse(
             {
                 "reply": (
-                    "Sorry, I couldn't process that message. "
-                    "Please try again."
+                    "Sorry, the AI assistant is temporarily unavailable. "
+                    "Please try again in a moment."
                 )
             },
-            status=500
+            status=500,
         )
