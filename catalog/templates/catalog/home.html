@@ -6,6 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Glow Beauty</title>
 
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#ff3f6c">
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#fff9fb;color:#333}
@@ -322,6 +325,12 @@ footer{text-align:center;padding:22px 15px;background:white;border-top:1px solid
       <input type="hidden" name="category" value="{{ selected_category }}">
     {% endif %}
     <button type="submit" class="search-btn">Search</button>
+    <button type="button" id="installAppBtn"
+            style="display:inline-block; background:#ff3f6c; color:white;
+                  padding:12px 18px; border:none; border-radius:25px;
+                  cursor:pointer; font-weight:bold; white-space:nowrap;">
+          Install App
+    </button>
   </form>
 </header>
 
@@ -561,6 +570,44 @@ Ask me about skincare, hair care, prices and discounts.</div>
     });
 })();
 </script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => console.log("PWA Service Worker registered"))
+            .catch(error => console.error("PWA error:", error));
+    });
+}
+</script>
+
+
+
+
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById("installAppBtn");
+
+installBtn.style.display = "inline-block";
+
+window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredPrompt = event;
+});
+
+installBtn.addEventListener("click", async () => {
+    if (deferredPrompt) {
+        await deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    } else {
+        alert("Please open the browser menu and select Install App.");
+    }
+});
+</script>
+</body>
+
 
 </body>
 </html>

@@ -23,9 +23,28 @@ from cart.views import sales_dashboard_page
 from catalog.views import api_test_page
 from cart.views import razorpay_webhook
 from catalog import views
+from django.http import FileResponse
+from pathlib import Path
+
+def service_worker(request):
+    file_path = Path(__file__).resolve().parent / "service-worker.js"
+    return FileResponse(
+        open(file_path, "rb"),
+        content_type="application/javascript"
+    )
+
+
+def manifest(request):
+    file_path = Path(__file__).resolve().parent / "templates" / "manifest.json"
+    return FileResponse(
+        open(file_path, "rb"),
+        content_type="application/manifest+json"
+    )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("service-worker.js", service_worker, name="service_worker"),
+    path("manifest.json", manifest, name="manifest"),
     path("", include("catalog.urls")),
     path('cart/', include("cart.urls")),
     path('accounts/login/', views.request_otp, name='account_login'),
